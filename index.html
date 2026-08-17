@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<!-- LA Study Tour Map 2026 Production v10 - 2026-08-17 -->
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0b1420" />
+<meta name="description" content="国士舘大学 ロサンゼルス海外実習マップ 2026" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>ロサンゼルス海外実習マップ 2026</title>
+<style>
+:root{
+  --bg:#0b1420;--panel:#101c29;--panel2:#132231;--line:#2b3a49;--text:#f4f7fb;--muted:#95a7b9;
+  --orange:#f59e0b;--red:#ff625c;--blue:#55a6ef;--purple:#7553d7;--green:#1ea36f;--brown:#b8692b;
+  --teal:#0e7894;--gray:#708399;--shadow:0 8px 28px rgba(0,0,0,.28)
+}
+*{box-sizing:border-box}
+html,body,#app{margin:0;width:100%;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
+button,input{font:inherit}
+button{-webkit-tap-highlight-color:transparent}
+.topbar{
+  height:46px;background:#080d13;border-bottom:1px solid #1f2a35;display:flex;align-items:center;
+  padding:0 14px;gap:10px;position:relative;z-index:80
+}
+.brand{font-weight:800;font-size:16px;white-space:nowrap}
+.brand small{margin-left:12px;color:#96a6b6;font-weight:500}
+.top-actions{margin-left:auto;display:flex;gap:8px}
+.btn{
+  background:#111d2a;color:#fff;border:1px solid #304153;border-radius:7px;padding:8px 11px;cursor:pointer;
+  min-height:38px
+}
+.btn:hover{background:#172638}
+.layout{height:calc(100% - 46px);display:grid;grid-template-columns:430px minmax(0,1fr)}
+.sidebar{background:var(--panel);border-right:1px solid var(--line);overflow:auto;overscroll-behavior:contain}
+.mobile-sheet-head{display:none}
+.section{padding:16px 18px;border-bottom:1px solid var(--line)}
+.section-title{font-size:15px;font-weight:800;margin-bottom:14px}
+.layer-row{display:grid;grid-template-columns:24px 22px 1fr auto;gap:8px;align-items:center;margin:13px 0;min-height:34px}
+.layer-row input{width:19px;height:19px}
+.ring{width:18px;height:18px;border-radius:50%;border:3px solid currentColor}
+.layer-name{font-weight:700;font-size:15px}.count{color:var(--muted);font-size:12px}
+.it-head{display:flex;justify-content:space-between;align-items:center}.hint{font-size:11px;color:var(--muted)}
+.day{margin:10px 0 18px}.day-head{display:flex;align-items:center;gap:10px;padding:7px 3px;cursor:pointer;border-radius:7px;min-height:42px}
+.day-head:hover{background:#182735}.day-head.active{background:#1c3043;box-shadow:inset 3px 0 0 #5aa7ef}.day-chip{background:#eef3f7;color:#1a2835;font-weight:900;font-size:12px;border-radius:4px;padding:5px 7px}
+.day-date{font-weight:800;font-size:16px}.day-note{margin-left:auto;color:var(--muted);font-size:11px}
+.event{display:grid;grid-template-columns:42px 92px 1fr;gap:8px;padding:8px 4px;align-items:start;cursor:pointer;border-radius:7px;min-height:48px}
+.event:hover,.event.active{background:#182735}
+.event-num{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;font-weight:900;font-size:13px}
+.event-num.flight{background:#536579!important}
+.event-num.plain{background:#314152!important;color:#a9bac8}
+.event-time{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#acbac8;font-size:12px;line-height:1.45;padding-top:4px}
+.event-name{font-size:13px;line-height:1.45;padding-top:3px}.event-note{grid-column:2/4;color:#8799aa;font-size:11px;margin-top:-3px;line-height:1.35}
+.map-wrap{position:relative;min-width:0;background:#0f1720}#map{position:absolute;inset:0}
+.map-toolbar{
+  position:absolute;left:0;right:0;top:0;height:56px;background:rgba(13,27,40,.95);border-bottom:1px solid #2b3b49;
+  z-index:10;display:flex;align-items:center;padding:8px 14px;gap:9px;backdrop-filter:blur(5px)
+}
+.toggle-group{display:flex;border:1px solid #415267;border-radius:6px;overflow:hidden}
+.mode-btn{border:0;padding:8px 12px;background:#172739;color:#dce6ef;cursor:pointer;font-weight:700;min-height:36px}
+.mode-btn.active{background:#f2f4f6;color:#243240}.toolbar-info{margin-left:auto;color:#91a5b9;font-size:12px}
+.zoomset{display:flex}.zoomset button{width:42px;height:36px;background:#111d2a;color:#fff;border:1px solid #304153;cursor:pointer;font-size:20px}
+.fit-btn{height:36px;background:#111d2a;color:#fff;border:1px solid #304153;border-radius:5px;padding:0 14px;cursor:pointer;font-weight:800}
+.emergency{
+  position:absolute;top:64px;left:14px;z-index:12;background:#d93030;color:white;border-radius:5px;padding:9px 13px;
+  font-weight:800;font-size:13px;box-shadow:var(--shadow);text-decoration:none
+}
+.status{
+  position:absolute;bottom:12px;left:14px;z-index:12;background:rgba(9,20,31,.94);border:1px solid #354758;color:#c2d0dd;
+  border-radius:7px;padding:8px 10px;font-size:11px;max-width:620px
+}
+.locate-btn{
+  position:absolute;right:14px;bottom:16px;z-index:12;width:46px;height:46px;border-radius:50%;
+  background:#fff;color:#203040;border:0;box-shadow:0 3px 16px rgba(0,0,0,.35);font-size:19px;cursor:pointer
+}
+.tourist-label{
+  color:#fff;border:3px solid #fff;border-radius:17px;padding:4px 10px;font-weight:900;font-size:12px;
+  box-shadow:0 2px 7px rgba(0,0,0,.42);white-space:nowrap;transform:translate(-6px,-8px);background:#d93697
+}
+.station-pin-wrap{width:22px;height:28px;position:relative;transform:translate(-11px,-26px)}
+.station-pin{
+  width:20px;height:20px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);
+  border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.48);position:absolute;left:1px;top:1px
+}
+.station-pin-core{
+  width:6px;height:6px;border-radius:50%;background:#fff;position:absolute;left:8px;top:8px;z-index:2
+}
+.marker-label{
+  color:#fff;border:3px solid white;border-radius:17px;padding:4px 11px;font-weight:900;font-size:13px;
+  box-shadow:0 2px 7px rgba(0,0,0,.42);white-space:nowrap;transform:translate(-6px,-8px)
+}
+.info{min-width:250px;max-width:330px;color:#17202a}.info h3{margin:0 0 7px;font-size:16px;line-height:1.3}.info p{margin:5px 0;line-height:1.4}
+.info .subtle{color:#687887;font-size:12px}.info .rating{font-weight:800}.info .hours{font-size:12px;line-height:1.45;margin-top:7px}
+.info a{color:#1666c5;text-decoration:none;font-weight:700}.info .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+.info .chiplink{display:inline-block;background:#eef4fb;border-radius:6px;padding:6px 8px}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal{width:min(620px,96vw);background:#12202d;border:1px solid #3d5265;border-radius:12px;box-shadow:0 20px 80px rgba(0,0,0,.5);padding:24px}
+.modal h2{margin:0 0 10px;font-size:22px}.modal p{color:#b9c7d4;line-height:1.65}.modal input{width:100%;padding:12px;border-radius:7px;border:1px solid #526779;background:#09131c;color:#fff;margin:8px 0 10px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}.primary{background:#f3f6f8;color:#10202d;border:0;border-radius:7px;padding:10px 16px;font-weight:800;cursor:pointer}
+.secondary{background:#1a2a38;color:#fff;border:1px solid #4a6074;border-radius:7px;padding:10px 16px;font-weight:700;cursor:pointer}
+.small{font-size:12px;color:#8fa2b4;line-height:1.5}.mobile-only{display:none}
+@media(max-width:900px){
+  html,body,#app{height:100dvh}
+  .topbar{height:48px;padding:0 10px env(safe-area-inset-right) 0 max(10px,env(safe-area-inset-left))}
+  .layout{height:calc(100dvh - 48px);grid-template-columns:1fr}
+  .brand{font-size:14px;max-width:68vw;overflow:hidden;text-overflow:ellipsis}.brand small{display:none}
+  .top-actions .btn{padding:7px 9px;min-height:36px;font-size:12px}
+  .sidebar{
+    position:fixed;z-index:60;left:0;right:0;bottom:0;width:100%;height:64px;overflow:hidden;
+    border-right:0;border-top:1px solid #3a4a59;border-radius:17px 17px 0 0;box-shadow:0 -10px 28px rgba(0,0,0,.38);
+    transition:height .22s ease;padding-bottom:env(safe-area-inset-bottom)
+  }
+  .sidebar.sheet-open{height:min(72dvh,760px);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+  .mobile-sheet-head{
+    display:flex;height:63px;align-items:center;padding:8px 14px;gap:11px;cursor:pointer;position:sticky;top:0;
+    background:#101c29;z-index:4;border-bottom:1px solid #243342
+  }
+  .grabber{width:40px;height:5px;border-radius:4px;background:#4a5a69;position:absolute;top:7px;left:50%;transform:translateX(-50%)}
+  .sheet-title{font-weight:800;margin-top:7px}.sheet-sub{margin-left:auto;color:#9db0c1;font-size:12px;margin-top:7px}
+  .sheet-chevron{font-size:18px;margin-top:7px}
+  .sidebar .section{padding:14px 15px}.sidebar.sheet-open .section:last-child{padding-bottom:calc(36px + env(safe-area-inset-bottom))}
+  .section-title{font-size:15px}.layer-row{min-height:42px;margin:8px 0}.layer-name{font-size:14px}
+  .day-head{min-height:46px}.event{min-height:54px;grid-template-columns:40px 76px 1fr}.event-name{font-size:13px}
+  .map-toolbar{
+    top:8px;left:auto;right:8px;width:auto;height:auto;border:1px solid #314355;border-radius:9px;padding:5px;
+    flex-wrap:nowrap;background:rgba(13,27,40,.93);box-shadow:var(--shadow)
+  }
+  .toolbar-info,.zoomset{display:none}.mode-btn{font-size:11px;padding:7px 8px;min-height:34px}.fit-btn{height:34px;padding:0 9px;font-size:11px}
+  .emergency{
+    top:8px;left:8px;right:auto;max-width:44vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    padding:8px 10px;font-size:11px;border-radius:9px
+  }
+    .status{left:8px;right:64px;bottom:76px;max-width:none;font-size:10px;padding:7px 8px}
+  .locate-btn{right:10px;bottom:78px;width:46px;height:46px}
+  .info{min-width:210px;max-width:74vw}.info h3{font-size:15px}.info p{font-size:12px}
+  .mobile-only{display:block}
+}
+@media(max-width:430px){
+  .toggle-group .mode-btn:nth-child(2){display:none}
+  }
+
+
+
+
+.marker-dim{
+  opacity:.05!important;
+  filter:grayscale(1) saturate(.05);
+}
+.marker-focus{
+  opacity:1!important;
+  filter:none!important;
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="topbar">
+    <div class="brand">ロサンゼルス海外実習マップ 2026 <small>Google Maps + Places · HTTPS公開・学生共有版 v10</small></div>
+    <div class="top-actions"><button class="btn" id="shareBtn">共有</button></div>
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="mobile-sheet-head" id="sheetHead">
+        <div class="grabber"></div>
+        <div class="sheet-title">行程・レイヤ</div>
+        <div class="sheet-sub">タップで開閉</div>
+        <div class="sheet-chevron" id="sheetChevron">⌃</div>
+      </div>
+
+      <section class="section">
+        <div class="section-title">表示するレイヤ</div>
+        <label class="layer-row"><input id="layerVisits" type="checkbox" checked><span class="ring" style="color:var(--orange)"></span><span class="layer-name">実習訪問先・宿泊先</span><span class="count" id="visitCount">0</span></label>
+        <label class="layer-row"><input id="layerTourism" type="checkbox" checked><span class="ring" style="color:#ff4fb3"></span><span class="layer-name">9/4 観光候補</span><span class="count" id="tourismCount">0</span></label>
+        <label class="layer-row"><input id="layerLafd" type="checkbox" checked><span class="ring" style="color:#ff625c"></span><span class="layer-name">LA市消防 LAFD</span><span class="count" id="lafdCount">読込前</span></label>
+        <label class="layer-row"><input id="layerLacofd" type="checkbox" checked><span class="ring" style="color:#55a6ef"></span><span class="layer-name">LA郡消防 LACoFD</span><span class="count" id="lacofdCount">読込前</span></label>
+      </section>
+
+      <section class="section">
+        <div class="it-head"><div class="section-title" style="margin:0">最新行程</div><div class="hint">日付をタップ → 当日の移動経路</div></div>
+        <div id="itinerary"></div>
+      </section>
+    </aside>
+
+    <main class="map-wrap">
+      <div id="map"></div>
+      <div class="map-toolbar">
+        <div class="toggle-group">
+          <button class="mode-btn active" id="practiceBtn">実習エリア</button>
+          <button class="mode-btn" id="wideBtn">広域</button>
+        </div>
+        <span class="toolbar-info">消防署: LAFD公式GIS / LA County GIS　施設アイコンもクリック可能</span>
+        <button class="fit-btn" id="fitAll">全体</button>
+      </div>
+
+      <a class="emergency" href="tel:+818027357987">☎ 緊急連絡先　中川洸志 +81-80-2735-7987</a>
+      <button class="locate-btn" id="locateBtn" title="現在地">◎</button>
+      <div class="status" id="status">地図を読み込んでいます…</div>
+    </main>
+  </div>
+</div>
+
+
+<script src="./config.js?v=9"></script>
+
+<script>
+const COLORS={visit:"#f59e0b",fire:"#ff625c",purple:"#7553d7",green:"#1ea36f",brown:"#b8692b",teal:"#0e7894",gray:"#708399"};
+
+/*
+  Latest itinerary source:
+  Kokushikan_Itinerary_20260814(1).xlsx (as of Aug 14, 2026)
+  Non-LA flight/transit-only rows are listed but intentionally do not create map pins.
+*/
+const stops={
+  lax:{label:"LAX",name:"ロサンゼルス国際空港（LAX）",placeQuery:"Los Angeles International Airport LAX",lat:33.9416,lng:-118.4085,type:"gray"},
+  marina:{label:"LACoFD Marina del Rey",name:"LA郡消防 マリナ・デル・レイ消防署（消防艇）",placeQuery:"Los Angeles County Fire Department Fire Station 110 Marina del Rey",lat:33.9768,lng:-118.4514,type:"fire"},
+  santaMonica:{label:"Santa Monica",name:"サンタモニカ",placeQuery:"Santa Monica Pier",lat:34.0094,lng:-118.4973,type:"brown"},
+  hotel:{label:"Hotel",name:"宿泊ホテル",placeQuery:"Best Western Plus Sunset Plaza Hotel Los Angeles",lat:34.0951,lng:-118.3737,type:"visit"},
+  lafdHollywood:{label:"LAFD Hollywood",name:"LA市消防 ハリウッド消防署",placeQuery:"Los Angeles Fire Department Fire Station 82",lat:34.1017,lng:-118.3268,type:"fire"},
+  dispatch:{label:"Dispatch Center",name:"LA郡消防 ディスパッチセンター（EMS通信）",lat:34.0343,lng:-118.1595,type:"fire"},
+  countyStation:{label:"LA County Fire",name:"LA郡消防署",lat:34.0310,lng:-118.1770,type:"fire"},
+  usc:{label:"USC",name:"南カリフォルニア大学（USC）",placeQuery:"University of Southern California",lat:34.0224,lng:-118.2851,type:"purple"},
+  ucla:{label:"UCLA Paramedic",name:"UCLA 救急救命士トレーニング",placeQuery:"UCLA Center for Prehospital Care El Segundo",lat:33.9164,lng:-118.4165,type:"purple"},
+  hb:{label:"HB Fire / Lifeguards",name:"ハンティントンビーチ消防・ライフガード・EMS",placeQuery:"Huntington Beach Marine Safety Division Lifeguard Headquarters",lat:33.6553,lng:-118.0034,type:"green",address:"103 CA-1, Huntington Beach, CA 92648"},
+  uci:{label:"UC Irvine Hospital",name:"UC Irvine 病院",placeQuery:"UCI Medical Center",lat:33.7874,lng:-117.8885,type:"green",address:"101 The City Dr S, Orange, CA 92868"},
+  mall:{label:"MainPlace Mall",name:"MainPlace Mall フードコート",placeQuery:"MainPlace Mall Santa Ana",lat:33.7753,lng:-117.8691,type:"brown",address:"2800 N. Main St, Santa Ana, CA 92705"},
+  falck:{label:"Falck HQ",name:"Falck 本部 — 民間救急サービス",placeQuery:"Falck Mobile Health Orange California",lat:33.7978,lng:-117.8757,type:"teal",address:"1413 W Braden Ct, Orange, CA 92868"},
+  groupFire:{label:"Team Fire Stations",name:"グループ別 消防署訪問",lat:34.0900,lng:-118.3600,type:"fire"},
+  universal:{label:"Universal",name:"【オプション】ユニバーサル・スタジオ：多数傷病者・医療対応",placeQuery:"Universal Studios Hollywood",lat:34.1381,lng:-118.3534,type:"brown"}
+};
+
+const tourismSpots=[
+  {id:"disney",label:"Disneyland",name:"Disneyland Park",lat:33.8121,lng:-117.9190,category:"Theme park"},
+  {id:"dodgers",label:"Dodger Stadium",name:"Dodger Stadium",lat:34.0739,lng:-118.2400,category:"Baseball stadium"},
+  {id:"griffith",label:"Griffith Observatory",name:"Griffith Observatory",lat:34.1184,lng:-118.3004,category:"Observatory / LA viewpoint"},
+  {id:"hollywood",label:"Hollywood",name:"Hollywood Walk of Fame",lat:34.1016,lng:-118.3267,category:"Sightseeing"},
+  {id:"getty",label:"Getty Center",name:"The Getty Center",lat:34.0780,lng:-118.4741,category:"Museum"},
+  {id:"beverly",label:"Beverly Hills",name:"Rodeo Drive",lat:34.0679,lng:-118.4005,category:"Shopping / sightseeing"},
+  {id:"santamonica",label:"Santa Monica Pier",name:"Santa Monica Pier",lat:34.0099,lng:-118.4960,category:"Beach / pier"},
+  {id:"universal-tour",label:"Universal Studios",name:"Universal Studios Hollywood",lat:34.1381,lng:-118.3534,category:"Theme park"}
+];
+
+const days=[
+ {day:1,date:"8月31日（月）",note:"確定",events:[
+  {time:"18:40",name:"成田空港 出発（シンガポール航空12便）",kind:"flight",note:"日本出発"},
+  {time:"12:50",name:"ロサンゼルス国際空港（LAX）到着",stop:"lax"},
+  {time:"14:30",name:"空港 出発",stop:"lax",kind:"transit"},
+  {time:"15:00–17:00",name:"LA郡消防 マリナ・デル・レイ消防署（消防艇）見学",stop:"marina"},
+  {time:"18:00–20:00",name:"サンタモニカ",stop:"santaMonica"},
+  {time:"夜",name:"ホテル チェックイン",stop:"hotel"}
+ ]},
+ {day:2,date:"9月1日（火）",note:"確定",events:[
+  {time:"8:30",name:"ホテル 出発",stop:"hotel",kind:"transit"},
+  {time:"9:00–11:00",name:"LA市消防 ハリウッド消防署 見学",stop:"lafdHollywood"},
+  {time:"13:30–14:30",name:"LA郡消防 ディスパッチセンター（EMS通信）見学",stop:"dispatch"},
+  {time:"15:00–16:00",name:"LA郡消防署 見学",stop:"countyStation"},
+  {time:"16:00–17:00",name:"南カリフォルニア大学（USC）キャンパスツアー",stop:"usc"}
+ ]},
+ {day:3,date:"9月2日（水）",note:"",events:[
+  {time:"8:00",name:"ホテル 出発",stop:"hotel",kind:"transit"},
+  {time:"9:00–12:00",name:"UCLA 救急救命士トレーニング（実技）",stop:"ucla",note:"ほぼ確定"},
+  {time:"12:00–14:00",name:"ハンティントンビーチへ移動・車内昼食",kind:"plain"},
+  {time:"14:00–16:00",name:"ハンティントンビーチ消防・ライフガード・EMS研修",stop:"hb",note:"担当：Keita Sato Fire Captain & Paramedic (HBFD) ／ Lifeguard HQ: 103 CA-1, Huntington Beach, CA 92648 ／ 確定"},
+  {time:"",name:"ホテルへ戻る",stop:"hotel",kind:"transit"}
+ ]},
+ {day:4,date:"9月3日（木）",note:"",events:[
+  {time:"7:30",name:"ホテル 出発",stop:"hotel",kind:"transit"},
+  {time:"9:00–11:00",name:"UC Irvine 病院 見学",stop:"uci",note:"確認待ち ／ 101 The City Dr S, Orange, CA 92868"},
+  {time:"昼",name:"MainPlace Mall フードコートで昼食",stop:"mall",note:"2800 N. Main St, Santa Ana, CA 92705"},
+  {time:"14:00–16:00",name:"Falck 本部 — 民間救急サービス 見学",stop:"falck",note:"Dr. Bijan Arab / Raj Vishal / Keita Sato ／ 1413 W Braden Ct, Orange, CA 92868 ／ 確定"},
+  {time:"18:00",name:"ホテルへ戻る",stop:"hotel",kind:"transit"}
+ ]},
+ {day:5,date:"9月4日（金）",note:"確定",events:[
+  {time:"終日",name:"グループ別 消防署訪問",stop:"groupFire"},
+  {time:"午後",name:"【オプション】ユニバーサル・スタジオ：大規模施設における多数傷病者・医療対応",stop:"universal",note:"任意参加"}
+ ]},
+ {day:6,date:"9月5日（土）",note:"確定",events:[
+  {time:"10:30",name:"ホテル 出発",stop:"hotel",kind:"transit"},
+  {time:"14:20",name:"ロサンゼルス 出発（シンガポール航空11便）",stop:"lax",kind:"flight"}
+ ]},
+ {day:7,date:"9月6日（日）",note:"",events:[
+  {time:"17:50",name:"成田空港 到着",kind:"flight",note:"日本到着"}
+ ]}
+];
+
+let map,infoWindow,userMarker=null;
+let visitMarkers=[],touristMarkers=[],lafdMarkers=[],lacofdMarkers=[],routeLines=[],selectedDay=null,initialized=false;
+const $=id=>document.getElementById(id);
+const setStatus=msg=>$("status").textContent=msg;
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));
+const colorFor=t=>COLORS[t]||COLORS.visit;
+
+function uniqueMappedStops(){
+  const keys=[];const seen=new Set();
+  days.forEach(d=>d.events.forEach(e=>{if(e.stop&&!seen.has(e.stop)){seen.add(e.stop);keys.push(e.stop)}}));
+  return keys;
+}
+
+function renderItinerary(){
+  const root=$("itinerary");root.innerHTML="";
+  let idx=0;
+  days.forEach(d=>{
+    const block=document.createElement("div");block.className="day";
+    const head=document.createElement("div");head.className="day-head";
+    head.innerHTML=`<span class="day-chip">DAY ${d.day}</span><span class="day-date">${d.date}</span><span class="day-note">${esc(d.note||"")}</span>`;
+    head.onclick=()=>focusDay(d.day);block.appendChild(head);
+    d.events.forEach(e=>{
+      idx++;
+      const row=document.createElement("div");row.className="event";row.dataset.event=idx;
+      const mapped=e.stop?stops[e.stop]:null;
+      const klass=e.kind==="flight"?"flight":(!mapped?"plain":"");
+      const icon=e.kind==="flight"?"✈":(e.kind==="transit"?"→":(mapped?String(idx).padStart(2,"0"):"•"));
+      const bg=mapped?colorFor(mapped.type):"#314152";
+      row.innerHTML=`<div class="event-num ${klass}" style="background:${bg}">${icon}</div>
+        <div class="event-time">${esc(e.time||"")}</div>
+        <div class="event-name">${esc(e.name)}</div>
+        ${e.note?`<div class="event-note">${esc(e.note)}</div>`:""}`;
+      if(mapped) row.onclick=()=>focusStop(e.stop,idx);
+      block.appendChild(row);
+    });
+    root.appendChild(block);
+  });
+  $("visitCount").textContent=uniqueMappedStops().length;
+}
+
+function getConfiguredApiKey(){
+  const embedded=String(window.LA_MAPS_API_KEY||"").trim();
+  if(embedded && !embedded.includes("REPLACE_WITH_")) return embedded;
+
+  // 管理者の移行用フォールバック。学生端末では config.js のキーを利用する。
+  const legacy=localStorage.getItem("la2026_google_maps_key")||"";
+  return legacy.trim();
+}
+
+function loadGoogleMaps(key){
+  if(!key){
+    setStatus("管理者設定が未完了です：GitHub上の config.js に制限済みGoogle Maps APIキーを1回だけ設定してください。");
+    return;
+  }
+  setStatus("Google Mapsを読み込んでいます…");
+  window.__gm_authFailure=()=>{
+    setStatus("Google Maps API認証に失敗しました。Google CloudのWebsite/API restrictionsを確認してください。");
+  };
+  window.initGoogleMap=initGoogleMap;
+  const old=$("gmaps-script");if(old)old.remove();
+  const s=document.createElement("script");
+  s.id="gmaps-script";s.async=true;s.defer=true;
+  s.src="https://maps.googleapis.com/maps/api/js?key="+encodeURIComponent(key)+"&libraries=marker,places&callback=initGoogleMap&loading=async&v=weekly&language=ja&region=US";
+  s.onerror=()=>{setStatus("Google Maps JavaScript APIの読み込みに失敗しました。");};
+  document.head.appendChild(s);
+}
+
+async function initGoogleMap(){
+  try{
+    if(initialized)return;initialized=true;
+    map=new google.maps.Map($("map"),{
+      center:{lat:34.02,lng:-118.27},zoom:10,mapId:"DEMO_MAP_ID",
+      disableDefaultUI:true,clickableIcons:true,gestureHandling:"greedy",
+      keyboardShortcuts:true
+    });
+    infoWindow=new google.maps.InfoWindow();
+    addVisitMarkers();
+    addTouristMarkers();
+    buildRoutes();
+    enablePoiDetails();
+    fitPractice();
+    loadFireStations();
+    setStatus("地図を読み込みました。日付をタップすると、その日の車移動ルートを表示します。");
+  }catch(err){
+    console.error(err);initialized=false;setStatus("地図初期化エラー: "+(err?.message||err));
+  }
+}
+
+function makeLabelElement(stop,key){
+  const el=document.createElement("div");el.className="marker-label";el.style.background=colorFor(stop.type);
+  const n=uniqueMappedStops().indexOf(key)+1;el.textContent=String(n).padStart(2,"0")+" "+stop.label;return el;
+}
+
+function addVisitMarkers(){
+  visitMarkers=[];
+  uniqueMappedStops().forEach(key=>{
+    const s=stops[key];
+    const marker=new google.maps.marker.AdvancedMarkerElement({
+      map,position:{lat:s.lat,lng:s.lng},content:makeLabelElement(s,key),title:s.name
+    });
+    marker.addListener("click",()=>openStopInfo(key,marker));
+    visitMarkers.push({key,marker,stop:s,element:marker.content});
+  });
+}
+
+
+const placeLinkCache=new Map();
+
+function buildExactGoogleMapsUrl(place,fallbackQuery){
+  const query=encodeURIComponent(fallbackQuery||place?.displayName||"");
+  if(place?.id){
+    return `https://www.google.com/maps/search/?api=1&query=${query}&query_place_id=${encodeURIComponent(place.id)}`;
+  }
+  if(place?.googleMapsURI) return place.googleMapsURI;
+  return `https://www.google.com/maps/search/?api=1&query=${query}`;
+}
+
+async function resolveExactGoogleMapsPlace(query,location){
+  const cacheKey=`${query}|${location?.lat||""},${location?.lng||""}`;
+  if(placeLinkCache.has(cacheKey)) return placeLinkCache.get(cacheKey);
+
+  try{
+    const {Place}=await google.maps.importLibrary("places");
+    const request={
+      textQuery:query,
+      fields:["id","displayName","formattedAddress","location","googleMapsURI"],
+      locationBias:location||undefined,
+      region:"US",
+      maxResultCount:5
+    };
+    const {places}=await Place.searchByText(request);
+    if(!places?.length) throw new Error("No Place result");
+
+    let best=places[0];
+    if(location){
+      let bestDistance=Infinity;
+      for(const p of places){
+        if(!p.location) continue;
+        const lat=typeof p.location.lat==="function"?p.location.lat():p.location.lat;
+        const lng=typeof p.location.lng==="function"?p.location.lng():p.location.lng;
+        if(!Number.isFinite(lat)||!Number.isFinite(lng)) continue;
+        const d=(lat-location.lat)**2+(lng-location.lng)**2;
+        if(d<bestDistance){bestDistance=d;best=p;}
+      }
+    }
+
+    const result={place:best,url:buildExactGoogleMapsUrl(best,query)};
+    placeLinkCache.set(cacheKey,result);
+    return result;
+  }catch(err){
+    console.warn("Place ID resolution failed:",query,err);
+    const result={place:null,url:`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`};
+    placeLinkCache.set(cacheKey,result);
+    return result;
+  }
+}
+
+async function prepareExactMapLink(linkId,query,location){
+  const a=document.getElementById(linkId);
+  if(a){
+    a.textContent="Google Mapsリンク準備中…";
+    a.style.pointerEvents="none";
+    a.style.opacity=".6";
+  }
+
+  const result=await resolveExactGoogleMapsPlace(query,location);
+  const link=document.getElementById(linkId);
+  if(!link) return;
+  link.href=result.url;
+  link.textContent="Google Mapsで開く ↗";
+  link.style.pointerEvents="auto";
+  link.style.opacity="1";
+}
+
+function openStopInfo(key,marker){
+  const stop=stops[key];
+  const query=stop.placeQuery || [stop.name,stop.address].filter(Boolean).join(", ");
+  const linkId=`maplink-stop-${key}`;
+  infoWindow.setContent(`<div class="info">
+    <h3>${esc(stop.name)}</h3>
+    ${stop.address?`<p>${esc(stop.address)}</p>`:""}
+    <div class="actions">
+      <a id="${linkId}" class="chiplink" target="_blank" rel="noopener">Google Mapsリンク準備中…</a>
+    </div>
+  </div>`);
+  infoWindow.open({map,anchor:marker});
+  prepareExactMapLink(linkId,query,{lat:stop.lat,lng:stop.lng});
+}
+
+function makeTouristElement(t){
+  const el=document.createElement("div");
+  el.className="tourist-label";
+  el.textContent="★ "+t.label;
+  return el;
+}
+function addTouristMarkers(){
+  touristMarkers=[];
+  tourismSpots.forEach(t=>{
+    const marker=new google.maps.marker.AdvancedMarkerElement({
+      map,position:{lat:t.lat,lng:t.lng},content:makeTouristElement(t),title:t.name,zIndex:200
+    });
+    marker.addListener("click",()=>openTouristInfo(t,marker));
+    touristMarkers.push({spot:t,marker,element:marker.content});
+  });
+  $("tourismCount").textContent=touristMarkers.length;
+}
+function openTouristInfo(t,marker){
+  const linkId=`maplink-tour-${t.id}`;
+  infoWindow.setContent(`<div class="info">
+    <h3>★ ${esc(t.name)}</h3>
+    <p class="subtle">9/4 観光候補 · ${esc(t.category)}</p>
+    <div class="actions">
+      <a id="${linkId}" class="chiplink" target="_blank" rel="noopener">Google Mapsリンク準備中…</a>
+    </div>
+  </div>`);
+  infoWindow.open({map,anchor:marker});
+  prepareExactMapLink(linkId,t.name,{lat:t.lat,lng:t.lng});
+}
+
+function makeStationPin(color){
+  const wrap=document.createElement("div");
+  wrap.className="station-pin-wrap";
+  const pin=document.createElement("div");
+  pin.className="station-pin";
+  pin.style.background=color;
+  const core=document.createElement("div");
+  core.className="station-pin-core";
+  wrap.appendChild(pin);
+  wrap.appendChild(core);
+  return wrap;
+}
+
+function attrByKeys(attrs, keys){
+  for(const key of keys){
+    if(attrs && attrs[key]!==undefined && attrs[key]!==null && String(attrs[key]).trim()!==""){
+      return attrs[key];
+    }
+  }
+  if(!attrs) return "";
+  const lower={};
+  Object.keys(attrs).forEach(k=>lower[k.toLowerCase()]=k);
+  for(const key of keys){
+    const real=lower[String(key).toLowerCase()];
+    if(real && attrs[real]!==undefined && attrs[real]!==null && String(attrs[real]).trim()!==""){
+      return attrs[real];
+    }
+  }
+  return "";
+}
+
+function stationNumberFromAttrs(attrs){
+  let v=attrByKeys(attrs,[
+    "STANUM","station","station_no","station_number","station_num","fire_station",
+    "FS","FS_NO","FIRESTATION","FIRE_STATION","Station","StationNo","STATION"
+  ]);
+  if(v!=="" && v!==null && v!==undefined){
+    const s=String(v).replace(/^0+/,"").trim();
+    if(s) return s;
+  }
+  for(const [k,val] of Object.entries(attrs||{})){
+    if(/station|stanum|fire.?station/i.test(k) && val!==null && val!==undefined){
+      const m=String(val).match(/\b(\d{1,3})\b/);
+      if(m) return m[1];
+    }
+  }
+  const name=attrByKeys(attrs,["name","NAME","Name","facility","FACILITY"]);
+  const m=String(name||"").match(/(?:station|sta\.?|fs)\s*#?\s*(\d{1,3})/i);
+  return m?m[1]:"";
+}
+
+function formatStationAddress(attrs){
+  const address=attrByKeys(attrs,["ADDRESS","address","Address","station_address","STREET_ADDRESS","FULL_ADDRESS"]);
+  const city=attrByKeys(attrs,["CITY","city","City","CITYNAME_A","community","COMMUNITY"]);
+  const statezip=attrByKeys(attrs,["STATEZIP","statezip","ZIP","zip","ZIPCODE","zipcode"]);
+  return [address,city,statezip].filter(Boolean).map(String).join(", ");
+}
+
+function stationExtraRows(attrs, agency){
+  const rows=[];
+  if(agency==="LAFD"){
+    const bureau=attrByKeys(attrs,["bureau","BUREAU","Bureau"]);
+    const battalion=attrByKeys(attrs,["battalion","BATTALION","BN","Battalion"]);
+    const phone=attrByKeys(attrs,["telephone","TELEPHONE","phone","PHONE","business_tel","BUSINESS_TEL"]);
+    if(bureau) rows.push(["管轄",String(bureau)]);
+    if(battalion) rows.push(["大隊",String(battalion)]);
+    if(phone) rows.push(["電話",String(phone)]);
+  }else{
+    const battalion=attrByKeys(attrs,["BN","BATTALION","Battalion"]);
+    const division=attrByKeys(attrs,["DIV","DIVISION","Division"]);
+    if(battalion) rows.push(["Battalion",String(battalion)]);
+    if(division) rows.push(["Division",String(division)]);
+  }
+  return rows;
+}
+
+function openStationInfo(station,marker){
+  const num=station.number;
+  const agencyLong=station.agency==="LAFD"?"Los Angeles Fire Department":"Los Angeles County Fire Department";
+  const title=num?`${agencyLong} Fire Station ${esc(num)}`:esc(station.name||`${agencyLong} Fire Station`);
+  const searchName=num?`${agencyLong} Fire Station ${num}`:(station.name||`${agencyLong} Fire Station`);
+  const query=[searchName,station.address].filter(Boolean).join(", ");
+  const linkId=`maplink-station-${station.agency}-${num||Math.abs(Math.round(station.lat*100000))}-${Math.abs(Math.round(station.lng*100000))}`;
+  const officialUrl=station.agency==="LAFD" && num
+    ? `https://lafd.org/fire-stations/station-${encodeURIComponent(num)}`
+    : "https://fire.lacounty.gov/";
+  const extra=station.extra.map(([k,v])=>`<p><b>${esc(k)}:</b> ${esc(v)}</p>`).join("");
+
+  infoWindow.setContent(`<div class="info">
+    <h3>${title}</h3>
+    <p class="subtle">${agencyLong}</p>
+    ${station.address?`<p>${esc(station.address)}</p>`:""}
+    ${extra}
+    <div class="actions">
+      <a id="${linkId}" class="chiplink" target="_blank" rel="noopener">Google Mapsリンク準備中…</a>
+      <a class="chiplink" target="_blank" rel="noopener" href="${officialUrl}">公式サイト ↗</a>
+    </div>
+  </div>`);
+  infoWindow.open({map,anchor:marker});
+  prepareExactMapLink(linkId,query,{lat:station.lat,lng:station.lng});
+}
+
+async function fetchArcGISFeatures(url){
+  const sep=url.includes("?")?"&":"?";
+  const query=url+sep+"where=1%3D1&outFields=*&returnGeometry=true&outSR=4326&resultRecordCount=2000&f=json";
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),15000);
+  try{
+    const r=await fetch(query,{mode:"cors",cache:"no-store",signal:controller.signal});
+    if(!r.ok) throw new Error(`HTTP ${r.status}`);
+    const data=await r.json();
+    if(data.error) throw new Error(data.error.message||"ArcGIS error");
+    return Array.isArray(data.features)?data.features:[];
+  }finally{
+    clearTimeout(timer);
+  }
+}
+
+async function fetchBestArcGIS(urls,minExpected){
+  let best=[];
+  for(const url of urls){
+    try{
+      const features=await fetchArcGISFeatures(url);
+      if(features.length>best.length) best=features;
+      if(features.length>=minExpected) return features;
+    }catch(e){
+      console.warn("ArcGIS source failed:",url,e);
+    }
+  }
+  return best;
+}
+
+function addOfficialStationMarkers(features,agency){
+  const target=agency==="LAFD"?lafdMarkers:lacofdMarkers;
+  const color=agency==="LAFD"?"#ff625c":"#55a6ef";
+  target.forEach(m=>m.map=null);
+  target.length=0;
+
+  const seen=new Set();
+  for(const f of features){
+    const g=f.geometry||{};
+    const lat=Number(g.y),lng=Number(g.x);
+    if(!Number.isFinite(lat)||!Number.isFinite(lng)) continue;
+    const attrs=f.attributes||{};
+    const num=stationNumberFromAttrs(attrs);
+    const address=formatStationAddress(attrs);
+    const rawName=attrByKeys(attrs,["NAME","name","Name","FACILITY","facility","CITYNAME_A"]);
+    const key=num?`${agency}-${num}`:`${agency}-${lat.toFixed(5)}-${lng.toFixed(5)}`;
+    if(seen.has(key)) continue;
+    seen.add(key);
+
+    const station={
+      agency,number:num,address,lat,lng,
+      name:rawName?String(rawName):`${agency} Fire Station`,
+      extra:stationExtraRows(attrs,agency)
+    };
+
+    const marker=new google.maps.marker.AdvancedMarkerElement({
+      map,
+      position:{lat,lng},
+      content:makeStationPin(color),
+      title:num?`${agency} Fire Station ${num}`:`${agency} Fire Station`,
+      zIndex:40
+    });
+    marker.addListener("click",()=>openStationInfo(station,marker));
+    marker.__pinElement=marker.content;
+    target.push(marker);
+  }
+  return target.length;
+}
+
+async function loadFireStations(){
+  $("lafdCount").textContent="読込中";
+  $("lacofdCount").textContent="読込中";
+  setStatus("LAFD / LACoFD の全消防署を公式GISから読み込んでいます…");
+
+  const lafdUrls=[
+    "https://firegis.lafd.org/arcgis/rest/services/Hosted/LAFD_GIS_Data/FeatureServer/0/query",
+    "https://services.arcgis.com/RmCCgQtiZLDCtblq/arcgis/rest/services/LAFD_Stations/FeatureServer/2/query"
+  ];
+  const lacofdUrls=[
+    "https://services.arcgis.com/RmCCgQtiZLDCtblq/arcgis/rest/services/LACoFD_Station_Locations/FeatureServer/0/query",
+    "https://services.arcgis.com/RmCCgQtiZLDCtblq/arcgis/rest/services/LACoFD_Fire_Station_Locations/FeatureServer/0/query"
+  ];
+
+  const [lafdFeatures,lacofdFeatures]=await Promise.all([
+    fetchBestArcGIS(lafdUrls,100),
+    fetchBestArcGIS(lacofdUrls,160)
+  ]);
+
+  const laCount=addOfficialStationMarkers(lafdFeatures,"LAFD");
+  const coCount=addOfficialStationMarkers(lacofdFeatures,"LACoFD");
+
+  $("lafdCount").textContent=laCount||"取得失敗";
+  $("lacofdCount").textContent=coCount||"取得失敗";
+  updateVisibility();
+
+  if(laCount && coCount){
+    setStatus(`消防署を表示しました：LAFD ${laCount}署（赤） / LACoFD ${coCount}署（青）。ピンをタップすると施設情報が開きます。`);
+  }else if(laCount || coCount){
+    setStatus(`消防署データの一部を表示しました：LAFD ${laCount||0} / LACoFD ${coCount||0}。取得できなかった側は再読み込みしてください。`);
+  }else{
+    setStatus("消防署データを取得できませんでした。Google Maps本体・旅程・観光候補は利用できます。");
+  }
+}
+
+function clearDisplayedRoute(){
+  routeLines.forEach(line=>line.setMap(null));
+  routeLines=[];
+}
+
+function buildRoutes(){
+  // 初期表示では経路線を出さない。
+  // 日付をタップした時だけ、Routes APIで道路に沿った移動経路を描画する。
+  clearDisplayedRoute();
+}
+
+function mappedPositionsForDay(day){
+  const d=days.find(x=>x.day===day);
+  if(!d) return [];
+  const points=[];
+  for(const e of d.events){
+    if(!e.stop) continue;
+    const s=stops[e.stop];
+    if(!s) continue;
+    const p={lat:s.lat,lng:s.lng,name:s.name};
+    const last=points[points.length-1];
+    if(!last || last.lat!==p.lat || last.lng!==p.lng) points.push(p);
+  }
+  return points;
+}
+
+function fitPath(path,padding=70){
+  const b=new google.maps.LatLngBounds();
+  (path||[]).forEach(p=>b.extend(p));
+  if(!b.isEmpty()) map.fitBounds(b,padding);
+}
+
+function drawFallbackRoute(day,points){
+  clearDisplayedRoute();
+  if(points.length<2) return;
+  const line=new google.maps.Polyline({
+    map,
+    path:points.map(p=>({lat:p.lat,lng:p.lng})),
+    strokeColor:"#5aa7ef",
+    strokeOpacity:.75,
+    strokeWeight:5,
+    geodesic:true,
+    zIndex:500
+  });
+  line.day=day;
+  routeLines.push(line);
+  fitPath(points,70);
+}
+
+async function showDayRoute(day){
+  const points=mappedPositionsForDay(day);
+  clearDisplayedRoute();
+
+  if(points.length===0){
+    setStatus(`DAY ${day} はロサンゼルス周辺の地図上移動がありません。`);
+    return;
+  }
+  if(points.length===1){
+    map.panTo({lat:points[0].lat,lng:points[0].lng});
+    map.setZoom(13);
+    setStatus(`DAY ${day} は地図上の訪問地点が1地点です。`);
+    return;
+  }
+
+  setStatus(`DAY ${day} の移動経路を計算しています…`);
+
+  try{
+    const {Route}=await google.maps.importLibrary("routes");
+    const request={
+      origin:{lat:points[0].lat,lng:points[0].lng},
+      destination:{lat:points[points.length-1].lat,lng:points[points.length-1].lng},
+      travelMode:"DRIVING",
+      intermediates:points.slice(1,-1).map(p=>({location:{lat:p.lat,lng:p.lng}})),
+      fields:["path","viewport","distanceMeters","durationMillis"]
+    };
+
+    const {routes}=await Route.computeRoutes(request);
+    if(!routes || routes.length===0) throw new Error("No route returned");
+
+    const route=routes[0];
+    const polylines=route.createPolylines();
+    polylines.forEach(poly=>{
+      poly.setOptions({
+        strokeColor:"#1a73e8",
+        strokeOpacity:.98,
+        strokeWeight:7,
+        zIndex:500
+      });
+      poly.day=day;
+      poly.setMap(map);
+      routeLines.push(poly);
+    });
+
+    if(route.viewport){
+      map.fitBounds(route.viewport,70);
+    }else if(route.path){
+      fitPath(route.path,70);
+    }
+
+    const km=Number.isFinite(route.distanceMeters)?(route.distanceMeters/1000).toFixed(1):null;
+    const min=Number.isFinite(route.durationMillis)?Math.round(route.durationMillis/60000):null;
+    const summary=[km?`${km} km`:null,min?`約${min}分`:null].filter(Boolean).join(" / ");
+    setStatus(`DAY ${day} の移動経路を表示しました${summary?`（${summary}）`:""}。`);
+  }catch(err){
+    console.warn("Routes API route error",err);
+    drawFallbackRoute(day,points);
+    setStatus(`DAY ${day} の道路ルートを取得できなかったため、地点間を簡易線で表示しています。管理者はRoutes APIの有効化を確認してください。`);
+  }
+}
+
+async function enablePoiDetails(){
+  map.addListener("click",async event=>{
+    if(!event.placeId) return;
+    if(typeof event.stop==="function") event.stop();
+    try{
+      setStatus("施設情報を取得しています…");
+      const {Place}=await google.maps.importLibrary("places");
+      const place=new Place({id:event.placeId,requestedLanguage:"ja",requestedRegion:"US"});
+      await place.fetchFields({fields:[
+        "displayName","formattedAddress","googleMapsURI","websiteURI","nationalPhoneNumber",
+        "rating","userRatingCount","regularOpeningHours","businessStatus","primaryTypeDisplayName"
+      ]});
+      showPoiInfo(place,event.latLng);
+      setStatus("施設情報を表示しました。");
+    }catch(err){
+      console.warn("Place details error",err);
+      const fallback=`https://www.google.com/maps/search/?api=1&query_place_id=${encodeURIComponent(event.placeId)}`;
+      infoWindow.setContent(`<div class="info"><h3>Google Maps施設</h3>
+        <p class="subtle">詳細取得には Places API (New) の有効化が必要です。</p>
+        <div class="actions"><a class="chiplink" target="_blank" href="${fallback}">Google Mapsで見る ↗</a></div></div>`);
+      infoWindow.setPosition(event.latLng);infoWindow.open(map);
+      setStatus("Places APIの詳細取得に失敗しました。Google Mapsリンクは利用できます。");
+    }
+  });
+}
+
+function showPoiInfo(place,position){
+  const rating=(place.rating!=null)?`<p class="rating">★ ${place.rating.toFixed(1)}${place.userRatingCount?`（${place.userRatingCount.toLocaleString()}件）`:""}</p>`:"";
+  const phone=place.nationalPhoneNumber?`<p>☎ ${esc(place.nationalPhoneNumber)}</p>`:"";
+  const type=place.primaryTypeDisplayName?`<p class="subtle">${esc(place.primaryTypeDisplayName)}</p>`:"";
+  const hours=(place.regularOpeningHours?.weekdayDescriptions||[]).slice(0,7);
+  const hoursHtml=hours.length?`<div class="hours"><b>営業時間</b><br>${hours.map(esc).join("<br>")}</div>`:"";
+  const mapsUrl=place.googleMapsURI||`https://www.google.com/maps/search/?api=1&query_place_id=${encodeURIComponent(place.id)}`;
+  const web=place.websiteURI?`<a class="chiplink" target="_blank" href="${esc(place.websiteURI)}">公式サイト ↗</a>`:"";
+  infoWindow.setContent(`<div class="info">
+    <h3>${esc(place.displayName||"施設")}</h3>
+    ${type}
+    ${place.formattedAddress?`<p>${esc(place.formattedAddress)}</p>`:""}
+    ${rating}${phone}${hoursHtml}
+    <div class="actions">
+      <a class="chiplink" target="_blank" href="${esc(mapsUrl)}">Google Maps ↗</a>${web}
+    </div>
+  </div>`);
+  infoWindow.setPosition(position);infoWindow.open(map);
+}
+
+
+function selectedStopKeysForDay(day){
+  const d=days.find(x=>x.day===day);
+  if(!d) return new Set();
+  return new Set(d.events.filter(e=>e.stop).map(e=>e.stop));
+}
+
+function setPinFocused(el,focused){
+  if(!el?.classList) return;
+  el.classList.toggle("marker-focus",focused);
+  el.classList.toggle("marker-dim",!focused);
+}
+
+function applyDayEmphasis(){
+  if(selectedDay===null){
+    visitMarkers.forEach(x=>x.element?.classList.remove("marker-dim","marker-focus"));
+    touristMarkers.forEach(x=>x.element?.classList.remove("marker-dim","marker-focus"));
+    lafdMarkers.forEach(m=>m.__pinElement?.classList.remove("marker-dim","marker-focus"));
+    lacofdMarkers.forEach(m=>m.__pinElement?.classList.remove("marker-dim","marker-focus"));
+    map?.setOptions({clickableIcons:true});
+    return;
+  }
+
+  const activeKeys=selectedStopKeysForDay(selectedDay);
+
+  // その日に訪問する施設だけ通常色。その他のカスタムピンはほぼ透明にする。
+  visitMarkers.forEach(x=>setPinFocused(x.element,activeKeys.has(x.key)));
+  touristMarkers.forEach(x=>setPinFocused(x.element,false));
+  lafdMarkers.forEach(m=>setPinFocused(m.__pinElement,false));
+  lacofdMarkers.forEach(m=>setPinFocused(m.__pinElement,false));
+
+  // 日別ルート表示時は標準POIのクリックを止め、当日の確認に集中しやすくする。
+  map?.setOptions({clickableIcons:false});
+}
+
+function updateVisibility(){
+  const on=$("layerVisits").checked;
+  visitMarkers.forEach(x=>x.marker.map=on?map:null);
+  const tourismOn=$("layerTourism").checked;
+  touristMarkers.forEach(x=>x.marker.map=tourismOn?map:null);
+  const lafdOn=$("layerLafd").checked;
+  lafdMarkers.forEach(m=>m.map=lafdOn?map:null);
+  const lacofdOn=$("layerLacofd").checked;
+  lacofdMarkers.forEach(m=>m.map=lacofdOn?map:null);
+  routeLines.forEach(l=>l.setMap(on&&selectedDay!==null&&selectedDay===l.day?map:null));
+  applyDayEmphasis();
+}
+
+function focusStop(key,eventIndex){
+  if(!map)return;
+  selectedDay=null;clearDisplayedRoute();updateVisibility();
+  const x=visitMarkers.find(x=>x.key===key);if(!x)return;
+  document.querySelectorAll(".event").forEach(el=>el.classList.toggle("active",+el.dataset.event===eventIndex));
+  map.panTo({lat:x.stop.lat,lng:x.stop.lng});map.setZoom(13);openStopInfo(key,x.marker);
+  if(innerWidth<=900) closeSheet();
+}
+
+async function focusDay(day){
+  if(!map)return;
+
+  const sameDay=selectedDay===day;
+  selectedDay=sameDay?null:day;
+
+  document.querySelectorAll(".day-head").forEach((el,i)=>{
+    const d=days[i];
+    el.classList.toggle("active",selectedDay!==null && d?.day===selectedDay);
+  });
+
+  if(selectedDay===null){
+    clearDisplayedRoute();
+    updateVisibility();
+    fitPractice();
+    return;
+  }
+
+  updateVisibility();
+  await showDayRoute(day);
+
+  if(innerWidth<=900) closeSheet();
+}
+
+function fitPractice(){
+  if(!map)return;
+  selectedDay=null;clearDisplayedRoute();document.querySelectorAll('.day-head').forEach(el=>el.classList.remove('active'));updateVisibility();
+  const b=new google.maps.LatLngBounds();
+  uniqueMappedStops().forEach(key=>{const s=stops[key];b.extend({lat:s.lat,lng:s.lng})});
+  map.fitBounds(b,70);$("practiceBtn").classList.add("active");$("wideBtn").classList.remove("active");
+}
+function fitWide(){
+  if(!map)return;
+  selectedDay=null;clearDisplayedRoute();document.querySelectorAll('.day-head').forEach(el=>el.classList.remove('active'));updateVisibility();
+  const b=new google.maps.LatLngBounds();
+  [{lat:33.52,lng:-118.72},{lat:34.42,lng:-117.42}].forEach(p=>b.extend(p));
+  map.fitBounds(b,45);$("wideBtn").classList.add("active");$("practiceBtn").classList.remove("active");
+}
+
+function toggleSheet(){
+  const open=$("sidebar").classList.toggle("sheet-open");
+  $("sheetChevron").textContent=open?"⌄":"⌃";
+}
+function closeSheet(){
+  $("sidebar").classList.remove("sheet-open");$("sheetChevron").textContent="⌃";
+}
+
+function locateMe(){
+  if(!navigator.geolocation){setStatus("このブラウザは現在地取得に対応していません。");return}
+  setStatus("現在地を取得しています…");
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const p={lat:pos.coords.latitude,lng:pos.coords.longitude};
+    if(userMarker)userMarker.map=null;
+    const dot=document.createElement("div");dot.style.cssText="width:18px;height:18px;border-radius:50%;background:#1a73e8;border:4px solid white;box-shadow:0 1px 7px rgba(0,0,0,.4)";
+    userMarker=new google.maps.marker.AdvancedMarkerElement({map,position:p,content:dot,title:"現在地"});
+    map.panTo(p);map.setZoom(14);setStatus("現在地を表示しました。");
+  },err=>setStatus("現在地を取得できませんでした: "+err.message),{enableHighAccuracy:true,timeout:8000,maximumAge:30000});
+}
+
+$("layerVisits").onchange=updateVisibility;$("layerTourism").onchange=updateVisibility;$("layerLafd").onchange=updateVisibility;$("layerLacofd").onchange=updateVisibility;$("practiceBtn").onclick=fitPractice;$("wideBtn").onclick=fitWide;$("fitAll").onclick=fitWide;
+$("sheetHead").onclick=toggleSheet;$("locateBtn").onclick=locateMe;
+$("shareBtn").onclick=async()=>{
+  const data={title:"ロサンゼルス海外実習マップ 2026",text:"国士舘大学 ロサンゼルス海外実習マップ 2026",url:location.href};
+  try{
+    if(navigator.share){await navigator.share(data);}
+    else{await navigator.clipboard.writeText(location.href);setStatus("公開URLをコピーしました。");}
+  }catch(e){if(e?.name!=="AbortError")setStatus("共有できませんでした。URLをコピーして共有してください。");}
+};
+window.addEventListener("resize",()=>{if(innerWidth>900)$("sidebar").classList.remove("sheet-open")});
+
+renderItinerary();
+
+function bootApp(){
+  if(location.protocol==="file:"){
+    document.body.innerHTML = `
+      <div style="min-height:100vh;background:#0b1420;color:#f4f7fb;display:flex;align-items:center;justify-content:center;padding:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+        <div style="max-width:680px;background:#12202d;border:1px solid #3d5265;border-radius:14px;padding:26px;box-shadow:0 20px 80px rgba(0,0,0,.45)">
+          <h2 style="margin-top:0">公開版URLから開いてください</h2>
+          <p style="line-height:1.7;color:#c2d0dd">学生共有版はHTTPS公開URLから利用します。</p>
+          <p><a href="https://nkgw54.github.io/la-study-tour-map-2026/" style="color:#8bc7ff;font-weight:800;word-break:break-all">https://nkgw54.github.io/la-study-tour-map-2026/</a></p>
+        </div>
+      </div>`;
+    return;
+  }
+  loadGoogleMaps(getConfiguredApiKey());
+}
+bootApp();
+</script>
+</body>
+</html>
